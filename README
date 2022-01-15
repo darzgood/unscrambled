@@ -1,11 +1,12 @@
 This project decodes a string of letters into credible English phrases
 
 It was initially built for the a "labyrinth" puzzle from
-https://www.tate.fyi/labyrinth/"minotaur" where
-letters = "asThenIcMinotaurneWton"
-The "minotaur" was pulled out as a relevant word, and TIW as starting letters
+https://www.tate.fyi/labyrinth/"minotaur" 
 
 However, the code can easily be reworked to solve any scrambled letter phrase
+
+letters = "asThenIcMinotaurneWton"
+The "minotaur" was pulled out as a relevant word, and TIW as starting letters
 
 It then finds all words starting with those starting letters and finds all
 possible combinations that have the same histogram as the original, scrambled
@@ -14,5 +15,3 @@ letters.
 These phrases are then ranked by usage frequency, so the first entry in the output
 is the most likely to be an actual phrase.
 (not necessarily with the words in the right order)
-
-The Minotaur Was Innocent!
