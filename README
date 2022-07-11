@@ -1,7 +1,9 @@
 This project decodes a string of letters into credible English phrases
 
 It was initially built for the a "labyrinth" puzzle from
-https://www.tate.fyi/labyrinth/"minotaur" 
+https://www.tate.fyi/labyrinth/
+and a more comprehensive article describing how it works is 
+https://www.tate.fyi/the-cracked-labyrinth/
 
 However, the code can easily be reworked to solve any scrambled letter phrase
 
