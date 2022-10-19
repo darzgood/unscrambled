@@ -61,6 +61,52 @@ def getCandidates(all_words, start, letters):
             candidates.add(word)
     return candidates
 
+def unscramble(orig_letters):
+    startLetters = ""
+    letters = ""
+    for letter in orig_letters:
+        if letter.upper() == letter:
+            startLetters += letter.lower()
+        else:
+            letters += letter
+
+    possible_words = []
+    with open("words_dictionary.json") as json_file:
+        # Get words that start with t, i, and w, the capitalized puzzle letters
+        words = json.load(json_file)
+        for sLetter in startLetters:
+            possible_words.append(getCandidates(words, sLetter, letters))
+
+        totalhist = histogram(orig_letters.lower())
+
+        phrases = dict()
+
+        phrases = unscramble_rec(phrases, possible_words, [], totalhist)
+
+        print( dict(sorted(phrases.items(), key=lambda item: item[1], reverse=True)) )
+
+
+def unscramble_rec(phrases, possible_words, current_words, totalhist):
+    phrase = ''.join(current_words)
+    if len(possible_words) > 0:
+        for word in possible_words[0]:
+            phrases = unscramble_rec(phrases, possible_words[1:], current_words + [word], totalhist)
+        return phrases
+
+    if len(phrase) == len(letters+startletters) and histogram(phrase) == totalhist:
+        freqs = [word_frequency(word, "en", wordlist='small', minimum=0.0) for word in current_words]
+
+        usage_freq = math.prod(freqs)
+
+        phrases[phrase] = usage_freq
+
+        print(phrase)
+
+    return phrases
+
+
+
+
 def main():
     """
     create phrases with only the given global "letters" and rank according to usage frequency
@@ -73,12 +119,6 @@ def main():
         t_words = getCandidates(words, "t", letters)
         i_words = getCandidates(words, "i", letters)
         w_words = getCandidates(words, "w", letters)
-        m_words = getCandidates(words, "m", letters)
-
-        print(t_words, len(t_words))
-        print(i_words, len(i_words))
-        print(w_words, len(w_words))
-        print(m_words, len(m_words))
 
         totalhist = histogram(letters + "tiw")
 
@@ -97,7 +137,6 @@ def main():
                         phrases[phrase] = wf
 
         print( dict(sorted(phrases.items(), key=lambda item: item[1], reverse=True)) )
-        print(len(phrases))
+
 if __name__ == '__main__':
-    main()
-    #unscramble("SeWhsAeemoAWSeeideeSmoSe")
+    unscramble("SeWhsAeemoAWSeeideeSmoSe")

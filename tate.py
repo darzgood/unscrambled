@@ -3,9 +3,9 @@ import json
 from wordfreq import word_frequency
 import math
 
-minotaur = "minotaur"
-letters = "ashencneton"
-startletters = "tiw"
+minotaur = "Tate"
+letters = "ashncnetonminour"
+startletters = "miw"
 
 def histogram(letters):
     """
@@ -83,7 +83,7 @@ def main():
         totalhist = histogram(letters + "tiw")
 
         phrases = dict()
-        for t in t_words:
+        for t in m_words:
             for i in i_words:
                 for w in w_words:
                     if (histogram(t+i+w) == totalhist):

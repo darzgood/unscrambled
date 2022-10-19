@@ -3,10 +3,6 @@ import json
 from wordfreq import word_frequency
 import math
 
-minotaur = "minotaur"
-letters = "ashencneton"
-startletters = "tiw"
-
 def histogram(letters):
     """
     Creates a frequency histogram of the given letters
@@ -14,14 +10,13 @@ def histogram(letters):
     Output: dictionary mapping from letters to the # of occurences of that letter
     """
     d = dict()
+    d[0] = len(letters)
     for letter in letters:
         if letter in d:
             d[letter] += 1
         else:
             d[letter] = 1
     return d
-
-letterhist = histogram(letters)
 
 def isSubhist(hist1, hist2):
     """
@@ -61,43 +56,46 @@ def getCandidates(all_words, start, letters):
             candidates.add(word)
     return candidates
 
-def main():
-    """
-    create phrases with only the given global "letters" and rank according to usage frequency
-    """
-    words = {}
-    # Opening JSON file
+def unscramble(orig_letters):
+    startLetters = ""
+    letters = ""
+    for letter in orig_letters:
+        if letter.upper() == letter:
+            startLetters += letter.lower()
+        else:
+            letters += letter
+
+    possible_words = []
     with open("words_dictionary.json") as json_file:
         # Get words that start with t, i, and w, the capitalized puzzle letters
         words = json.load(json_file)
-        t_words = getCandidates(words, "t", letters)
-        i_words = getCandidates(words, "i", letters)
-        w_words = getCandidates(words, "w", letters)
-        m_words = getCandidates(words, "m", letters)
+        for sLetter in startLetters:
+            possible_words.append(getCandidates(words, sLetter, letters))
 
-        print(t_words, len(t_words))
-        print(i_words, len(i_words))
-        print(w_words, len(w_words))
-        print(m_words, len(m_words))
-
-        totalhist = histogram(letters + "tiw")
+        totalhist = histogram((orig_letters.lower() + (len(startLetters))*" "))
 
         phrases = dict()
-        for t in t_words:
-            for i in i_words:
-                for w in w_words:
-                    if (histogram(t+i+w) == totalhist):
-                        phrase = (t+" "+i+" "+w)
-                        phrase += " "+minotaur
 
-                        wf = word_frequency(t, "en", wordlist='small', minimum=0.0) * \
-                         word_frequency(i, "en", wordlist='small', minimum=0.0) * \
-                         word_frequency(w, "en", wordlist='small', minimum=0.0)
-
-                        phrases[phrase] = wf
+        phrases = unscramble_rec(phrases, possible_words, '', totalhist)
 
         print( dict(sorted(phrases.items(), key=lambda item: item[1], reverse=True)) )
-        print(len(phrases))
+
+
+def unscramble_rec(phrases, possible_words, current_words, totalhist):
+    if len(possible_words) > 0:
+        for word in possible_words[0]:
+            new = current_words + " " + word
+            #print(new, histogram(new), totalhist)
+            if len(new) <= totalhist[0]:
+                phrases = unscramble_rec(phrases, possible_words[1:], new, totalhist)
+
+        return phrases
+
+    elif histogram(current_words) == totalhist:
+        phrases[current_words] = 1
+        #print(current_words)
+
+    return phrases
+
 if __name__ == '__main__':
-    main()
-    #unscramble("SeWhsAeemoAWSeeideeSmoSe")
+    unscramble("SeWhsAeemoAWSeeideeSmoSe")
